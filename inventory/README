@@ -1,0 +1,115 @@
+# Crypto Inventory – PQC Readiness
+
+This folder demonstrates the **first and most critical step** in any Post‑Quantum Cryptography (PQC) migration:
+
+> **Identifying where quantum‑vulnerable cryptography is used today.**
+
+The goal is *visibility*, not replacement.
+
+---
+
+## What this demo does
+
+The program `crypto_inventory_demo.py`:
+
+* Establishes a real TLS connection to a target endpoint
+* Observes negotiated TLS parameters
+* Extracts available certificate metadata
+* Classifies cryptographic usage from a **quantum‑risk perspective**
+
+This mirrors how early‑stage PQC discovery tools work in enterprise environments.
+
+---
+
+## TLS version discovery
+
+The TLS version (e.g., TLS 1.2 vs TLS 1.3) is **not hard‑coded**.
+
+Instead:
+
+* Python’s `ssl` module delegates protocol support to the underlying **OpenSSL** library
+* During the TLS handshake, the server selects the highest mutually supported version
+* The program reports the negotiated result
+
+This reflects real‑world behavior: identical code may negotiate different TLS versions on different systems depending on OpenSSL and OS policy.
+
+---
+
+## Why the certificate signature algorithm may appear as `None`
+
+You may observe output such as:
+
+```
+[Certificate Signature Algorithm]
+None
+Classification: Unknown
+```
+
+This is **expected behavior**, especially for TLS 1.3 connections.
+
+### Explanation
+
+* The server certificate *does* contain a signature algorithm (e.g., RSA or ECDSA)
+* However, Python’s `ssl.getpeercert()` API exposes only a **limited, sanitized view** of the X.509 certificate
+* In TLS 1.3, the certificate signature algorithm is often **not surfaced** through this API
+
+This is an **API visibility limitation**, not a cryptographic absence.
+
+---
+
+## TLS 1.3 nuance
+
+TLS 1.3 distinguishes between:
+
+1. **Certificate signature algorithm** (X.509)
+2. **Handshake signature algorithm** (used during key exchange)
+
+Python’s standard `ssl` interface does not reliably expose either for inspection.
+
+Real inventory tools address this by:
+
+* Parsing certificates directly (ASN.1)
+* Using specialized libraries (e.g., `cryptography`)
+* Integrating OpenSSL tooling
+
+---
+
+## Why this limitation is important for PQC readiness
+
+This demo intentionally highlights that:
+
+* Cryptographic inventory is **non‑trivial**
+* Visibility gaps exist even in modern APIs
+* PQC migration requires tooling, not assumptions
+
+Recognizing and documenting these gaps is a core part of responsible PQC planning.
+
+---
+
+## Scope of this demo
+
+This folder focuses on:
+
+* Discovery
+* Classification
+* Risk labeling
+
+It intentionally does **not**:
+
+* Implement PQC algorithms
+* Replace cryptographic primitives
+* Perform cryptanalysis
+
+Those belong to later migration phases.
+
+---
+
+## Next steps
+
+Possible extensions include:
+
+* Explicit certificate parsing using `cryptography.x509`
+* Multi‑endpoint scanning
+* Inventory report aggregation
+
+These will be added incrementally as the repository evolves.
