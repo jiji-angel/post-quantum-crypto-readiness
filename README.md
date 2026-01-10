@@ -1,7 +1,7 @@
 # Post-Quantum Cryptography Readiness
 
 This repository focuses on **practical, engineering-oriented preparation for Post-Quantum Cryptography (PQC)**.
-It is **not** an implementation of math behind the PQC algorithms such as lattices or hash-based constructs. Neitehr it has the implementaions of current PQC standards suchas as ML-KEM, ML-DSA or SLH-DSA. Instead, it demonstrates how real-world systems can **identify, adapt, and migrate** cryptographic components in anticipation of quantum-capable adversaries.
+It is **not** an implementation of math behind the PQC algorithms such as lattices or hash-based constructs. Neither it has the implementations of current PQC standards such as as ML-KEM, ML-DSA or SLH-DSA. Instead, it demonstrates how real-world systems can **identify, adapt, and migrate** cryptographic components in anticipation of quantum-capable adversaries.
 
 The emphasis is on:
 
